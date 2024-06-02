@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results of Loksabha Election in All States of India</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #e9ecef;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #343a40;
+            margin-bottom: 20px;
+        }
+        .search-bar {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .search-bar input {
+            padding: 10px;
+            width: 80%;
+            max-width: 500px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .state-list {
+            margin: 20px 0;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        .state {
+            cursor: pointer;
+            padding: 15px;
+            margin: 10px;
+            background-color: #007BFF;
+            color: #fff;
+            border-radius: 5px;
+            text-align: center;
+            flex: 1 1 calc(20% - 20px);
+            transition: background-color 0.3s, transform 0.3s, opacity 0.5s;
+            opacity: 1;
+        }
+        .state:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+        .results {
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .results h2 {
+            margin-top: 0;
+        }
+        .constituency {
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            transition: background-color 0.3s, opacity 0.5s;
+            opacity: 1;
+            cursor: pointer;
+        }
+        .constituency:last-child {
+            border-bottom: none;
+        }
+        .constituency:hover {
+            background-color: #f8f9fa;
+        }
+        .constituency span {
+            font-weight: bold;
+        }
+        .pagination {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .pagination button {
+            padding: 10px 20px;
+            margin: 0 5px;
+            border: none;
+            background-color: #007BFF;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .pagination button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+        .modal-header h2 {
+            margin: 0;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        @media (max-width: 768px) {
+            .state {
+                flex: 1 1 calc(45% - 20px);
+            }
+            .modal-content {
+                width: 95%;
+            }
+        }
+        @media (max-width: 480px) {
+            .state {
+                flex: 1 1 calc(100% - 20px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Results of Loksabha Election in All States of India</h1>
+        <div class="search-bar">
+            <input type="text" id="stateSearch" onkeyup="filterStates()" placeholder="Search for states...">
+        </div>
+        <div class="state-list" id="stateList">
+            <div class="state" onclick="showResults('Andhra Pradesh')">Andhra Pradesh</div>
+            <div class="state" onclick="showResults('Arunachal Pradesh')">Arunachal Pradesh</div>
+            <div class="state" onclick="showResults('Assam')">Assam</div>
+            <div class="state" onclick="showResults('Bihar')">Bihar</div>
+            <div class="state" onclick="showResults('Chhattisgarh')">Chhattisgarh</div>
+            <div class="state" onclick="showResults('Goa')">Goa</div>
+            <div class="state" onclick="showResults('Gujarat')">Gujarat</div>
+            <div class="state" onclick="showResults('Haryana')">Haryana</div>
+            <div class="state" onclick="showResults('Himachal Pradesh')">Himachal Pradesh</div>
+            <div class="state" onclick="showResults('Jharkhand')">Jharkhand</div>
+            <div class="state" onclick="showResults('Karnataka')">Karnataka</div>
+            <div class="state" onclick="showResults('Kerala')">Kerala</div>
+            <div class="state" onclick="showResults('Madhya Pradesh')">Madhya Pradesh</div>
+            <div class="state" onclick="showResults('Maharashtra')">Maharashtra</div>
+            <div class="state" onclick="showResults('Manipur')">Manipur</div>
+            <div class="state" onclick="showResults('Meghalaya')">Meghalaya</div>
+            <div class="state" onclick="showResults('Mizoram')">Mizoram</div>
+            <div class="state" onclick="showResults('Nagaland')">Nagaland</div>
+            <div class="state" onclick="showResults('Odisha')">Odisha</div>
+            <div class="state" onclick="showResults('Punjab')">Punjab</div>
+            <div class="state" onclick="showResults('Rajasthan')">Rajasthan</div>
+            <div class="state" onclick="showResults('Sikkim')">Sikkim</div>
+            <div class="state" onclick="showResults('Tamil Nadu')">Tamil Nadu</div>
+            <div class="state" onclick="showResults('Telangana')">Telangana</div>
+            <div class="state" onclick="showResults('Tripura')">Tripura</div>
+            <div class="state" onclick="showResults('Uttar Pradesh')">Uttar Pradesh</div>
+            <div class="state" onclick="showResults('Uttarakhand')">Uttarakhand</div>
+            <div class="state" onclick="showResults('West Bengal')">West Bengal</div>
+        </div>
+        <div class="results" id="results">
+            <!-- Results will be displayed here -->
+        </div>
+        <div class="pagination" id="pagination">
+            <!-- Pagination buttons will be displayed here -->
+        </div>
+    </div>
+
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Constituency Details</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Constituency details will be displayed here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const electionResults = {
+            "Andhra Pradesh": [
+                { constituency: "Araku", winningParty: "YSRCP" },
+                { constituency: "Srikakulam", winningParty: "YSRCP" }
+            ],
+            "Arunachal Pradesh": [
+                { constituency: "Arunachal West", winningParty: "BJP" },
+                { constituency: "Arunachal East", winningParty: "BJP" }
+            ],
+            "Assam": [
+                { constituency: "Dibrugarh", winningParty: "BJP" },
+                { constituency: "Kaliabor", winningParty: "INC" }
+            ],
+            "Bihar": [
+                { constituency: "Arrah", winningParty: "BJP" },
+                { constituency: "Aurangabad", winningParty: "BJP" }
+            ],
+            "Chhattisgarh": [
+                { constituency: "Bastar", winningParty: "INC" },
+                { constituency: "Bilaspur", winningParty: "BJP" }
+            ],
+            "Goa": [
+                { constituency: "North Goa", winningParty: "BJP" },
+                { constituency: "South Goa", winningParty: "INC" }
+            ],
+            "Gujarat": [
+                { constituency: "Ahmedabad East", winningParty: "BJP" },
+                { constituency: "Ahmedabad West", winningParty: "BJP" }
+            ],
+            "Haryana": [
+                { constituency: "Ambala", winningParty: "BJP" },
+                { constituency: "Bhiwani-Mahendragarh", winningParty: "BJP" }
+            ],
+            "Himachal Pradesh": [
+                { constituency: "Hamirpur", winningParty: "BJP" },
+                { constituency: "Kangra", winningParty: "BJP" }
+            ],
+            "Jharkhand": [
+                { constituency: "Chatra", winningParty: "BJP" },
+                { constituency: "Dhanbad", winningParty: "BJP" }
+            ],
+            "Karnataka": [
+                { constituency: "Bagalkot", winningParty: "BJP" },
+                { constituency: "Bangalore Central", winningParty: "BJP" }
+            ],
+            "Kerala": [
+                { constituency: "Alappuzha", winningParty: "INC" },
+                { constituency: "Ernakulam", winningParty: "INC" }
+            ],
+            "Madhya Pradesh": [
+                { constituency: "Balaghat", winningParty: "BJP" },
+                { constituency: "Betul", winningParty: "BJP" }
+            ],
+            "Maharashtra": [
+                { constituency: "Ahmednagar", winningParty: "BJP" },
+                { constituency: "Akola", winningParty: "BJP" }
+            ],
+            "Manipur": [
+                { constituency: "Inner Manipur", winningParty: "INC" },
+                { constituency: "Outer Manipur", winningParty: "Naga People's Front" }
+            ],
+            "Meghalaya": [
+                { constituency: "Shillong", winningParty: "INC" },
+                { constituency: "Tura", winningParty: "NPP" }
+            ],
+            "Mizoram": [
+                { constituency: "Mizoram", winningParty: "INC" }
+            ],
+            "Nagaland": [
+                { constituency: "Nagaland", winningParty: "NDPP" }
+            ],
+            "Odisha": [
+                { constituency: "Aska", winningParty: "BJD" },
+                { constituency: "Balasore", winningParty: "BJD" }
+            ],
+            "Punjab": [
+                { constituency: "Amritsar", winningParty: "INC" },
+                { constituency: "Anandpur Sahib", winningParty: "INC" }
+            ],
+            "Rajasthan": [
+                { constituency: "Ajmer", winningParty: "BJP" },
+                { constituency: "Alwar", winningParty: "BJP" }
+            ],
+            "Sikkim": [
+                { constituency: "Sikkim", winningParty: "SDF" }
+            ],
+            "Tamil Nadu": [
+                { constituency: "Arakkonam", winningParty: "DMK" },
+                { constituency: "Chennai Central", winningParty: "DMK" }
+            ],
+            "Telangana": [
+                { constituency: "Adilabad", winningParty: "TRS" },
+                { constituency: "Bhongir", winningParty: "TRS" }
+            ],
+            "Tripura": [
+                { constituency: "Tripura West", winningParty: "BJP" },
+                { constituency: "Tripura East", winningParty: "BJP" }
+            ],
+            "Uttar Pradesh": [
+                { constituency: "Agra", winningParty: "BJP" },
+                { constituency: "Aligarh", winningParty: "BJP" }
+            ],
+            "Uttarakhand": [
+                { constituency: "Almora", winningParty: "BJP" },
+                { constituency: "Garhwal", winningParty: "BJP" }
+            ],
+            "West Bengal": [
+                { constituency: "Alipurduars", winningParty: "BJP" },
+                { constituency: "Arambagh", winningParty: "AITC" }
+            ]
+        };
+
+        const itemsPerPage = 5;
+        let currentPage = 1;
+        let currentResults = [];
+
+        function showResults(state) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = `<h2>Results for ${state}</h2>`;
+            const stateResults = electionResults[state];
+            currentResults = stateResults;
+            currentPage = 1;
+            displayPage();
+        }
+
+        function displayPage() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = resultsDiv.innerHTML.split('<h2>')[0] + `<h2>Results for ${currentResults[0].constituency}</h2>`;
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const paginatedResults = currentResults.slice(start, end);
+
+            paginatedResults.forEach(result => {
+                const resultDiv = document.createElement('div');
+                resultDiv.className = 'constituency';
+                resultDiv.innerHTML = `<span>${result.constituency}:</span> <span>${result.winningParty}</span>`;
+                resultDiv.onclick = () => showDetails(result);
+                resultsDiv.appendChild(resultDiv);
+            });
+
+            displayPagination();
+        }
+
+        function displayPagination() {
+            const paginationDiv = document.getElementById('pagination');
+            paginationDiv.innerHTML = '';
+
+            const totalPages = Math.ceil(currentResults.length / itemsPerPage);
+
+            for (let i = 1; i <= totalPages; i++) {
+                const button = document.createElement('button');
+                button.innerHTML = i;
+                button.disabled = (i === currentPage);
+                button.onclick = () => {
+                    currentPage = i;
+                    displayPage();
+                };
+                paginationDiv.appendChild(button);
+            }
+        }
+
+        function showDetails(result) {
+            const modal = document.getElementById('myModal');
+            const modalBody = document.getElementById('modalBody');
+            modalBody.innerHTML = `<p><strong>Constituency:</strong> ${result.constituency}</p><p><strong>Winning Party:</strong> ${result.winningParty}</p>`;
+            modal.style.display = "block";
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('myModal');
+            modal.style.display = "none";
+        }
+
+        function filterStates() {
+            const input = document.getElementById('stateSearch');
+            const filter = input.value.toLowerCase();
+            const stateList = document.getElementById('stateList');
+            const states = stateList.getElementsByClassName('state');
+
+            for (let i = 0; i < states.length; i++) {
+                const state = states[i];
+                if (state.innerHTML.toLowerCase().includes(filter)) {
+                    state.style.opacity = "1";
+                } else {
+                    state.style.opacity = "0.2";
+                }
+            }
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('myModal');
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>
